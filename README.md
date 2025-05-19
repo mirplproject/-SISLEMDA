@@ -12,5 +12,10 @@ e.g refactor/ganti-lirary-validasi)
 6. test/nama-test (untuk perubahan terkait pengujian e.g test/unit-test-login)
 7. chore/nama-pekerjaan (untuk perubahan tugas kecil atau pemeliharaan rutin 
 e.g chore/upgrade-depedencies)
-8. coba
+
+branch:
+1.staging, untuk menyatukan/pull dari beberapa branch kelompok.
+2.hotfix, tempat untuk melakukan debuging ketika ada bug pada staging
+3.relase, tempat akhir untuk melakukan pengetesan sebelum disatukan ke branch main
+
 hal ini wajib dilakukan untuk mencegah kesalahpahaman penulisan pada perubahan-perubahan yang dilakukan, dan membantu menjaga repositori tetap terstruktur serta mudah dinavigasi.
