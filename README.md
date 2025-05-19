@@ -13,4 +13,8 @@ e.g refactor/ganti-lirary-validasi)
 7. chore/nama-pekerjaan (untuk perubahan tugas kecil atau pemeliharaan rutin 
 e.g chore/upgrade-depedencies)
 
+branch:
+staging, branch untuk tahap awal menyatukan/pull dari beberapa branch
+hotfix, branch untuk mekalukan proses debuging setelah menyatukan branch
+realese, branch untuk melakukan testing akhir sebelum di up ke branch main
 hal ini wajib dilakukan untuk mencegah kesalahpahaman penulisan pada perubahan-perubahan yang dilakukan, dan membantu menjaga repositori tetap terstruktur serta mudah dinavigasi.
