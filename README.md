@@ -13,4 +13,4 @@ e.g refactor/ganti-lirary-validasi)
 7. chore/nama-pekerjaan (untuk perubahan tugas kecil atau pemeliharaan rutin 
 e.g chore/upgrade-depedencies)
 8. coba
-hal ini wajib dilakukan untuk mencegah kesalahpahaman penulisan pada perubahan-perubahan yang dilakukan, dan membantu menjaga repositori tetap terstruktur serta mudah dinavigasi.
+hal ini wajib dilakukan untuk mencegah kesalahpahaman penulisan pada perubahan-perubahan yang dilakukan, dan membantu menjaga repositori tetap terstruktur serta mudah dinavigasi."test paang" 
