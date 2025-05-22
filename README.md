@@ -12,5 +12,14 @@ e.g refactor/ganti-lirary-validasi)
 6. test/nama-test (untuk perubahan terkait pengujian e.g test/unit-test-login)
 7. chore/nama-pekerjaan (untuk perubahan tugas kecil atau pemeliharaan rutin 
 e.g chore/upgrade-depedencies)
+<<<<<<< HEAD
 8. coba
 hal ini wajib dilakukan untuk mencegah kesalahpahaman penulisan pada perubahan-perubahan yang dilakukan, dan membantu menjaga repositori tetap terstruktur serta mudah dinavigasi."test paang" 
+=======
+
+branch:
+staging, branch untuk tahap awal menyatukan/pull dari beberapa branch
+hotfix, branch untuk mekalukan proses debuging setelah menyatukan branch
+realese, branch untuk melakukan testing akhir sebelum di up ke branch main
+hal ini wajib dilakukan untuk mencegah kesalahpahaman penulisan pada perubahan-perubahan yang dilakukan, dan membantu menjaga repositori tetap terstruktur serta mudah dinavigasi.
+>>>>>>> b76a76f80620920e44b608e08b5bfd0e98061fa6
