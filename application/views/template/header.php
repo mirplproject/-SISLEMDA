@@ -56,29 +56,30 @@
     </head>
 <body class="sb-nav-fixed">
     <nav class="sb-topnav navbar navbar-expand navbar-light bg-white border-bottom border-3 border-success">
-        <img src="<?php echo base_url('assets/template/img/logo_binainsani.png" rel="stylesheet')?>" alt="Logo" style="width: 220px; height: 40px; object-fit: contain;"/>
+        <img src="<?php echo base_url('assets/template/img/logo_binainsani.png') ?>" alt="Logo" style="width: 220px; height: 40px; object-fit: contain;"/>
         <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
 
-      <ul class="navbar-nav ms-auto me-3 my-2 my-md-0 d-flex align-items-center gap-3">
-    <!-- Notifikasi -->
-    <li class="nav-item">
-        <div class="bg-success rounded-3 d-flex justify-content-center align-items-center" style="width: 40px; height: 40px;">
-            <i class="fas fa-bell text-white"></i>
-        </div>
-    </li>
+        <ul class="navbar-nav ms-auto me-3 my-2 my-md-0 d-flex align-items-center gap-3">
+            <!-- Notifikasi -->
+            <li class="nav-item">
+                <div class="bg-success rounded-3 d-flex justify-content-center align-items-center" style="width: 40px; height: 40px;">
+                    <i class="fas fa-bell text-white"></i>
+                </div>
+            </li>
 
-    <!-- Admin dropdown -->
-    <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="<?php echo base_url('assets/template/img/gambarorg.jpg') ?>" class="rounded-3" width="40" height="40" alt="Admin">
-            <span class="fw-semibold text-dark">Admin</span>
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="#!">Settings</a></li>
-            <li><a class="dropdown-item" href="#!">Activity Log</a></li>
-            <li><hr class="dropdown-divider" /></li>
-            <li><a class="dropdown-item text-danger" href="#!">Logout</a></li>
+            <!-- Admin dropdown -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="<?php echo base_url('assets/template/img/gambarorg.jpg') ?>" class="rounded-3" width="40" height="40" alt="Admin">
+                    <span class="fw-semibold text-dark"><?php echo $this->session->userdata('name'); ?></span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="#!">Settings</a></li>
+                    <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+                    <li><hr class="dropdown-divider" /></li>
+                    <li><a class="dropdown-item text-danger" href="<?php echo site_url('auth/logout'); ?>">Logout</a></li>
+                </ul>
+            </li>
         </ul>
-    </li>
-</ul>
     </nav>
+<div id="layoutSidenav">
