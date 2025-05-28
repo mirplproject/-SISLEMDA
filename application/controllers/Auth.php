@@ -6,48 +6,63 @@ class Auth extends CI_Controller {
         parent::__construct();
         $this->load->library('session');
         $this->load->helper('url');
-        $this->load->model('auth_m');
+        $this->load->model('admin_m');
     }
 
     public function login() {
         if ($this->session->userdata('logged_in')) {
-            redirect('user');
+            $role = $this->session->userdata('active_role');
+            if ($role == 'admin') {
+                redirect('admin');
+            } else {
+                redirect('user/dashboard');
+            }
         }
 
         if ($this->input->post()) {
             $username = $this->input->post('username');
             $password = $this->input->post('password');
-            
-            $user = $this->auth_m->login($username, $password);
-            
-            if ($user) {
-                $roles = $this->auth_m->get_user_roles($user['id_user']);
-                
-                $session_data = [
-                    'user_id' => $user['id_user'],
-                    'username' => $user['username'],
-                    'name' => $user['nama'],
-                    'roles' => array_column($roles, 'nama_role'),
-                    'logged_in' => TRUE
-                ];
-                $this->session->set_userdata($session_data);
 
-                if (count($roles) > 1) {
-                    redirect('auth/choose_role');
-                } else {
-                    $this->session->set_userdata('active_role', $roles[0]['nama_role']);
-                    if ($roles[0]['nama_role'] == 'admin') {
-                        redirect('admin');
+            $this->db->where('username', $username);
+            $query = $this->db->get('user');
+            $user = $query->row_array();
+
+            if ($user) {
+                $hashed_password = md5($password);
+                if ($hashed_password == $user['password']) {
+                    $this->session->set_userdata([
+                        'logged_in' => true,
+                        'id_user' => $user['id_user'],
+                        'username' => $user['username'],
+                        'name' => $user['nama'],
+                    ]);
+
+                    $roles = $this->admin_m->get_user_roles($user['id_user']);
+                    if (empty($roles)) {
+                        $this->session->set_flashdata('error', 'User tidak memiliki role!');
+                        redirect('auth/login');
+                    } elseif (count($roles) > 1) {
+                        $data['roles'] = $roles;
+                        $this->load->view('auth/choose_role', $data);
                     } else {
-                        redirect('user');
+                        $this->session->set_userdata('active_role', $roles[0]['nama_role']);
+                        if ($roles[0]['nama_role'] == 'admin') {
+                            redirect('admin');
+                        } else {
+                            redirect('user/dashboard');
+                        }
                     }
+                } else {
+                    $this->session->set_flashdata('error', 'Username atau password salah!');
+                    redirect('auth/login');
                 }
             } else {
-                $this->session->set_flashdata('error', 'Username atau password salah');
+                $this->session->set_flashdata('error', 'Username tidak ditemukan!');
                 redirect('auth/login');
             }
+        } else {
+            $this->load->view('auth/login');
         }
-        $this->load->view('auth/login');
     }
 
     public function choose_role() {
@@ -55,33 +70,41 @@ class Auth extends CI_Controller {
             redirect('auth/login');
         }
 
-        $roles = $this->session->userdata('roles');
-        if (count($roles) <= 1) {
-            redirect('user');
-        }
+        $role = $this->input->post('role');
+        if ($role) {
+            $user_id = $this->session->userdata('id_user');
+            $roles = $this->admin_m->get_user_roles($user_id);
+            $role_exists = false;
+            foreach ($roles as $r) {
+                if ($r['nama_role'] == $role) {
+                    $role_exists = true;
+                    break;
+                }
+            }
 
-        if ($this->input->post('role')) {
-            $selected_role = $this->input->post('role');
-            if (in_array($selected_role, $roles)) {
-                $this->session->set_userdata('active_role', $selected_role);
-                if ($selected_role == 'admin') {
+            if ($role_exists) {
+                $this->session->set_userdata('active_role', $role);
+                if ($role == 'admin') {
                     redirect('admin');
                 } else {
-                    redirect('user');
+                    redirect('user/dashboard');
                 }
             } else {
-                $this->session->set_flashdata('error', 'Role tidak valid');
+                $this->session->set_flashdata('error', 'Role tidak valid untuk user ini!');
+                $data['roles'] = $roles;
+                $this->load->view('auth/choose_role', $data);
             }
+        } else {
+            $this->session->set_flashdata('error', 'Silakan pilih role terlebih dahulu!');
+            $user_id = $this->session->userdata('id_user');
+            $data['roles'] = $this->admin_m->get_user_roles($user_id);
+            $this->load->view('auth/choose_role', $data);
         }
-
-        $data = [];
-        $data['title'] = 'Pilih Role';
-        $data['roles'] = $roles;
-        $this->load->view('auth/choose_role', $data);
     }
 
     public function logout() {
-        $this->session->sess_destroy();
+        $this->session->unset_userdata(['logged_in', 'id_user', 'username', 'name', 'active_role']);
+        $this->session->set_flashdata('success', 'Anda telah logout.');
         redirect('auth/login');
     }
 }
