@@ -2,6 +2,14 @@
     <div class="col-xl-12">
         <h2 class="mb-4">Kelola Role User</h2>
 
+        <!-- Flashdata Messages -->
+        <?php if ($this->session->flashdata('success')): ?>
+            <div class="alert alert-success"><?php echo $this->session->flashdata('success'); ?></div>
+        <?php endif; ?>
+        <?php if ($this->session->flashdata('error')): ?>
+            <div class="alert alert-danger"><?php echo $this->session->flashdata('error'); ?></div>
+        <?php endif; ?>
+
         <!-- Search Bar -->
         <form method="get" action="<?php echo site_url('admin/manage_role_user'); ?>" class="mb-4">
             <div class="input-group">
@@ -36,9 +44,17 @@
                             <td><?php echo $user['nama_fakultas']; ?></td>
                             <td><?php echo $user['nama_prodi']; ?></td>
                             <td>
-                                <?php foreach ($user['role_details'] as $role): ?>
-                                    <a href="<?php echo site_url('admin/remove_role/' . $user['id_user'] . '/' . $role['id_role']); ?>" class="btn btn-sm btn-danger mb-1" onclick="return confirm('Apakah Anda yakin ingin menghapus role ini?')">Hapus <?php echo $role['nama_role']; ?></a><br>
-                                <?php endforeach; ?>
+                                <?php if (!empty($user['role_details'])): ?>
+                                    <?php foreach ($user['role_details'] as $role): ?>
+                                        <?php if (count($user['role_details']) > 1): ?>
+                                            <a href="<?php echo site_url('admin/remove_role/' . $user['id_user'] . '/' . $role['id_role']); ?>" class="btn btn-sm btn-danger mb-1" onclick="return confirm('Apakah Anda yakin ingin menghapus role ini?')">Hapus <?php echo $role['nama_role']; ?></a><br>
+                                        <?php else: ?>
+                                            <span class="text-muted">Minimal 1 role</span><br>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <span class="text-muted">Tidak ada role</span>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -56,3 +72,4 @@
         </div>
     </div>
 </div>
+

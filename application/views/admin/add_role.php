@@ -1,13 +1,13 @@
 <div class="row">
     <div class="col-xl-12">
-        <h2 class="mb-4">Kelola Role</h2>
+        <h2 class="mb-4">Kelola Peran</h2>
         <?php if ($this->session->flashdata('success')): ?>
             <div class="alert alert-success"><?php echo $this->session->flashdata('success'); ?></div>
         <?php endif; ?>
 
         <div class="row">
             <div class="col-xl-12">
-                <h2 class="mb-4">Tambah Role Baru</h2>
+                <h2 class="mb-4">Tambah Peran Baru</h2>
                 <?php if ($this->session->flashdata('success')): ?>
                     <div class="alert alert-success"><?php echo $this->session->flashdata('success'); ?></div>
                 <?php endif; ?>
@@ -17,15 +17,15 @@
 
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Form Tambah Role</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Form Tambah Peran </h6>
                     </div>
                     <div class="card-body">
                         <form method="post" action="<?php echo site_url('admin/add_role'); ?>">
                             <div class="form-group">
-                                <label for="nama_role">Nama Role</label>
+                                <label for="nama_role">Nama Peran</label>
                                 <input type="text" class="form-control" id="nama_role" name="nama_role" required>
                             </div>
-                            <button type="submit" class="btn btn-primary">Tambah Role</button>
+                            <button type="submit" class="btn btn-primary">Tambah Peran</button>
                             <a href="<?php echo site_url('admin/manage_role_user'); ?>" class="btn btn-secondary ml-2">Kembali</a>
                         </form>
                     </div>
@@ -39,7 +39,7 @@
                 <table class="table table-bordered" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>Nama Role</th>
+                            <th>Nama Peran</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -55,7 +55,7 @@
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="2">Tidak ada data Role.</td></tr>
+                            <tr><td colspan="2">Tidak ada data Peran.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
