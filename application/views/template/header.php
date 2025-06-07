@@ -60,13 +60,56 @@
         <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
 
         <ul class="navbar-nav ms-auto me-3 my-2 my-md-0 d-flex align-items-center gap-3">
-            <!-- Notifikasi -->
-            <li class="nav-item">
-                <div class="bg-success rounded-3 d-flex justify-content-center align-items-center" style="width: 40px; height: 40px;">
-                    <i class="fas fa-bell text-white"></i>
+            <li class="nav-item dropdown no-arrow mx-1">                
+                <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <!-- tambahkan text-danger jika ada notif -->
+                    <i class="fas fa-bell fa-fw"></i>
+                    <!-- tambahkan jika ada notifnya 
+                    <span class="badge bg-danger badge-counter">3+</span>
+                    -->
+                </a>
+                <div class="dropdown-menu dropdown-menu-end shadow animated--grow-in"
+                    aria-labelledby="alertsDropdown">
+                    <h4 class="dropdown-header">
+                        Notifikasi
+                    </h4>
+                    <a class="dropdown-item d-flex align-items-center" href="#">
+                        <div class="me-3">
+                            <div class="icon-circle bg-primary">
+                                <i class="fas fa-file-alt text-white"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="small text-gray-500">December 12, 2024</div>
+                            <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                        </div>
+                    </a>
+                    <a class="dropdown-item d-flex align-items-center" href="#">
+                        <div class="me-3">
+                            <div class="icon-circle bg-success">
+                                <i class="fas fa-donate text-white"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="small text-gray-500">December 7, 2024</div>
+                            $290.29 has been deposited into your account!
+                        </div>
+                    </a>
+                    <a class="dropdown-item d-flex align-items-center" href="#">
+                        <div class="me-3">
+                            <div class="icon-circle bg-warning">
+                                <i class="fas fa-exclamation-triangle text-white"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="small text-gray-500">December 2, 2024</div>
+                            Spending Alert: We've noticed unusually high spending for your account.
+                        </div>
+                    </a>
+                    <a class="dropdown-item text-center small text-gray-500" href="#">Lihat Seluruhnya</a>
                 </div>
             </li>
-
             <!-- Admin dropdown -->
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
