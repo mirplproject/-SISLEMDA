@@ -11,6 +11,8 @@ class User extends CI_Controller {
         $this->load->library('session');
         $this->load->helper('url');
         $this->load->model('admin_m');
+        $this->load->model('User_model');
+
 
         // Definisikan kategori role
         $this->user1_roles = [
@@ -85,14 +87,39 @@ class User extends CI_Controller {
         $this->load->view('template/footer', $data);
     }
 
+
     public function riwayat_pengajuan() {
         $data = [];
         $data['title'] = 'Riwayat Pengajuan';
-        $data['user_name'] = $this->session->userdata('name');
-        $data['content_view'] = 'user/riwayat_pengajuan';
+        $data['user_name'] = $this->session->userdata('name'); // Ambil nama dari session
+
+        // Ambil ID user dari session jika ini untuk riwayat pribadi
+        $user_id = $this->session->userdata('id_user'); // Asumsi ID user disimpan di session
+        // Jika ini halaman admin yang melihat semua riwayat, Anda bisa panggil tanpa parameter:
+        // $data['riwayat_data'] = $this->Pengajuan_model->get_riwayat_pengajuan();
+        // Untuk riwayat user yang login, gunakan:
+        $data['riwayat_data'] = $this->User_model->get_riwayat_pengajuan($user_id);
+
+
+        $data['content_view'] = 'user/riwayat_pengajuan'; // Pastikan path view sudah benar
+
         $this->load->view('template/header', $data);
         $this->load->view('template/sidebar', $data);
         $this->load->view('template/footer', $data);
+    }
+
+    // Helper untuk warna badge status (bisa juga diletakkan di helper file jika sering dipakai)
+    private function _get_status_badge_color($status) {
+        switch ($status) {
+            case 'disetujui':
+                return 'success';
+            case 'ditolak':
+                return 'danger';
+            case 'kadaluarsa':
+                return 'warning';
+            default:
+                return 'secondary';
+        }
     }
 
     public function laporan() {
