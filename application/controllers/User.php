@@ -11,6 +11,8 @@ class User extends CI_Controller {
         $this->load->library('session');
         $this->load->helper('url');
         $this->load->model('admin_m');
+        $this->load->model('User_model');
+        $this->load->model('Surat_model');
 
         // Definisikan kategori role
         $this->user1_roles = [
@@ -59,6 +61,8 @@ class User extends CI_Controller {
         $data = [];
         $data['title'] = 'Lembar Pengajuan';
         $data['user_name'] = $this->session->userdata('name');
+        $data['klasifikasis'] = $this->Surat_model->get_all_klasifikasi();
+        $data['users'] = $this->User_model->getUserWithRoles();
         $data['content_view'] = 'user/lembar_pengajuan';
         $this->load->view('template/header', $data);
         $this->load->view('template/sidebar', $data);

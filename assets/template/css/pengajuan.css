@@ -1,0 +1,286 @@
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      padding: 20px; /* Reduced padding */
+      position: relative;
+      z-index: 10;
+      top: 0; /* Ensure no offset */
+      margin-top: 10px; /* Minimal top margin to ensure visibility */
+    }
+
+    h1 {
+      font-size: 24px; /* Slightly reduced for better fit */
+      color: #1e293b;
+      margin-bottom: 20px; /* Reduced margin */
+      text-align: center;
+      border-bottom: 2px solid #047857; /* Reduced border thickness */
+      padding-bottom: 10px; /* Reduced padding */
+    }
+
+    label {
+      font-weight: 600;
+      color: #374151;
+      font-size: 14px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px; /* Reduced gap */
+      width: 100%;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px; /* Reduced gap */
+      align-items: end;
+      width: 100%;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px; /* Reduced gap */
+      width: 100%;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    input[type="text"], input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 12px; /* Reduced padding */
+      border: 2px solid #e5e7eb;
+      border-radius: 6px; /* Reduced radius */
+      font-size: 14px;
+      font-family: inherit;
+      background-color: #ffffff;
+      transition: all 0.2s ease;
+    }
+
+    input[type="text"]:focus, input[type="date"]:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #047857;
+      box-shadow: 0 0 0 2px rgba(4, 120, 87, 0.1); /* Reduced shadow */
+    }
+
+    input[type="date"]:read-only {
+      background-color: #f9fafb;
+      color: #6b7280;
+      cursor: not-allowed;
+    }
+
+    select {
+      cursor: pointer;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px; /* Reduced height */
+    }
+
+    .file-upload-container {
+      position: relative;
+      width: 100%;
+    }
+
+    input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      border: 2px dashed #d1d5db;
+      border-radius: 6px;
+      background-color: #f9fafb;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    input[type="file"]:hover {
+      border-color: #047857;
+      background-color: #f0fdfa;
+    }
+
+    .file-selected {
+      display: none;
+      margin-top: 8px;
+      padding: 8px;
+      background-color: #f0fdfa;
+      border: 1px solid #047857;
+      border-radius: 4px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .file-selected.show {
+      display: flex;
+    }
+
+    /* .file-info {
+      font-size: 12px; 
+      color: #047857;
+    } */
+
+    /* .remove-file {
+      background: #dc2626;
+      color: white;
+      border: none;
+      width: 20px; 
+      height: 20px; 
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      line-height: 1;
+    } */
+
+    .remove-file:hover {
+      background: #b91c1c;
+    }
+
+    .buttons {
+      margin-top: 20px; /* Reduced margin */
+      display: flex;
+      justify-content: center;
+      gap: 12px; /* Reduced gap */
+      width: 100%;
+    }
+
+    .btn {
+      background-color: #047857;
+      color: white;
+      border: none;
+      padding: 10px 20px; /* Reduced padding */
+      border-radius: 6px; /* Reduced radius */
+      cursor: pointer;
+      font-size: 14px; /* Reduced font size */
+      font-weight: 600;
+      min-width: 100px; /* Reduced width */
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background-color: #065f46;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(4, 120, 87, 0.2); /* Reduced shadow */
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .close-btn {
+      background: #dc2626;
+      color: white;
+      border: none;
+      padding: 6px 12px; /* Reduced padding */
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 8px; /* Reduced margin */
+    }
+
+    .close-btn:hover {
+      background: #b91c1c;
+    }
+
+    @media (max-width: 1024px) {
+      body {
+        margin-left: 0;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .container {
+        margin-left: 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 5px; /* Reduced padding */
+      }
+
+      .container {
+        padding: 15px; /* Reduced padding */
+        margin: 0;
+        width: 100%;
+        max-width: none;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 10px; /* Reduced gap */
+      }
+
+      h1 {
+        font-size: 20px; /* Reduced font size */
+      }
+
+      .buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .btn {
+        width: 150px; /* Reduced width */
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 2px; /* Reduced padding */
+      }
+
+      .container {
+        padding: 10px; /* Reduced padding */
+      }
+
+      h1 {
+        font-size: 18px; /* Reduced font size */
+      }
+
+      input[type="text"],
+      select,
+      textarea {
+        padding: 8px 10px; /* Reduced padding */
+      }
+    }
+
+    .container, .form-row, .form-group, form {
+      overflow-x: hidden;
+    }
+    .notif-success {
+    background-color: #d1fae5;
+    border: 1px solid #10b981;
+    color: #065f46;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: 600;
+    animation: fadeOut 5s forwards;
+  }
+
+  @keyframes fadeOut {
+    0%   { opacity: 1; }
+  }
+
