@@ -62,8 +62,23 @@ class User extends CI_Controller {
         $data['title'] = 'Lembar Pengajuan';
         $data['user_name'] = $this->session->userdata('name');
         $data['klasifikasis'] = $this->Surat_model->get_all_klasifikasi();
-        $data['users'] = $this->User_model->getUserWithRoles();
-        $data['content_view'] = 'user/lembar_pengajuan';
+        $data['unitpengajuan'] = $this->Surat_model->get_all_unitpengajuan();
+        $data['no_surat'] = $this->Surat_model->generate_nomor_surat(); // Generate nomor surat
+
+        // Ambil role user dari session atau query
+        $id_user = $this->session->userdata('id_user');
+        $role = $this->User_model->get_role_by_user($id_user); // asumsi fungsi ini mengembalikan objek role
+
+        // Daftar role yang akan menampilkan lembar pengajuan khusus (atas)
+        $role_atas = ['warek1', 'warek2', 'warek3', 'ppm', 'rektor', 'yayasan'];
+
+        // Tentukan view yang akan digunakan berdasarkan role
+        if ($role && in_array(strtolower($role->nama_role), $role_atas)) {
+            $data['content_view'] = 'user/lembar_pengajuan_atas';
+        } else {
+            $data['content_view'] = 'user/lembar_pengajuan';
+        }
+        
         $this->load->view('template/header', $data);
         $this->load->view('template/sidebar', $data);
         $this->load->view('template/footer', $data);

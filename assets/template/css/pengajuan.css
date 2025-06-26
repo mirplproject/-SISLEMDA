@@ -116,7 +116,7 @@
       background-color: #f0fdfa;
     }
 
-    .file-selected {
+    /* .file-selected {
       display: none;
       margin-top: 8px;
       padding: 8px;
@@ -129,7 +129,7 @@
 
     .file-selected.show {
       display: flex;
-    }
+    } */
 
     /* .file-info {
       font-size: 12px; 
@@ -151,9 +151,9 @@
       line-height: 1;
     } */
 
-    .remove-file:hover {
+    /* .remove-file:hover {
       background: #b91c1c;
-    }
+    } */
 
     .buttons {
       margin-top: 20px; /* Reduced margin */
@@ -284,3 +284,21 @@
     0%   { opacity: 1; }
   }
 
+  .file-tag {
+    display: inline-flex;
+    align-items: center;
+    background: #767973;
+    border-radius: 16px;
+    padding: 4px 10px;
+    margin: 5px 5px 0 0;
+  }
+  .file-tag span {
+    margin-right: 8px;
+  }
+  .remove-file {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #c00;
+  }
