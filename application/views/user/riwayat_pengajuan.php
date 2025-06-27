@@ -1,4 +1,4 @@
-<div class="row ">
+<div class="row">
     <div class="col-xl-12">
         <h2 class="mb-4">Riwayat Lembar Pengajuan</h2>
 
@@ -9,73 +9,87 @@
             <div class="alert alert-danger"><?php echo $this->session->flashdata('error'); ?></div>
         <?php endif; ?>
 
-        <div class="table-responsive">
-            <table id="riwayatTable" class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Username Pengaju</th>
-                        <th>Klasifikasi Surat</th>
-                        <th>No Surat</th>
-                        <th>Perihal</th>
-                        <th>Tanggal Pengajuan</th>
-                        <th>Status Pengajuan</th>
-                        </tr>
-                </thead>
-                <tbody>
-                    <?php if (!empty($riwayat_data)): ?>
-                        <?php $no = 1; ?>
-                        <?php foreach ($riwayat_data as $row): ?>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Data Riwayat Pengajuan</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="riwayatTable" class="table table-bordered table-hover">
+                        <thead>
                             <tr>
-                                <td><?php echo $no++; ?></td>
-                                <td><?php echo htmlspecialchars($row['username']); ?></td>
-                                <td><?php echo htmlspecialchars($row['nama_surat']); ?></td>
-                                <td><?php echo htmlspecialchars($row['no_surat']); ?></td>
-                                <td><?php echo htmlspecialchars($row['perihal']); ?></td>
-                                <td><?php echo date('d-m-Y', strtotime($row['tanggal_pengajuan'])); ?></td>
-                                <td>
-                                    <?php
-                                        $status_color = '';
-                                        switch ($row['status_pengajuan']) {
-                                            case 'disetujui':
-                                                $status_color = 'success';
-                                                break;
-                                            case 'ditolak':
-                                                $status_color = 'danger';
-                                                break;
-                                            case 'kadaluarsa':
-                                                $status_color = 'warning';
-                                                break;
-                                            default:
-                                                $status_color = 'secondary';
-                                                break;
-                                        }
-                                    ?>
-                                    <span class="badge badge-<?php echo $status_color; ?>"><?php echo htmlspecialchars($row['status_pengajuan']); ?></span>
-                                </td>
+                                <th>No</th>
+                                <th>Username Pengaju</th>
+                                <th>Klasifikasi Surat</th>
+                                <th>No Surat</th>
+                                <th>Perihal</th>
+                                <th>Tanggal Pengajuan</th>
+                                <th>Status Pengajuan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (!empty($riwayat_data)): ?>
+                                <?php $no = 1; ?>
+                                <?php foreach ($riwayat_data as $row): ?>
+                                    <tr>
+                                        <td><?php echo $no++; ?></td>
+                                        <td><?php echo htmlspecialchars($row['username']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['nama_surat']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['no_surat']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['perihal']); ?></td>
+                                        <td><?php echo date('d-m-Y', strtotime($row['tanggal_pengajuan'])); ?></td>
+                                        <td>
+                                            <?php
+                                                $status_color = '';
+                                                switch ($row['status_pengajuan']) {
+                                                    case 'disetujui':
+                                                        $status_color = 'success';
+                                                        break;
+                                                    case 'ditolak':
+                                                        $status_color = 'danger';
+                                                        break;
+                                                    case 'kadaluarsa':
+                                                        $status_color = 'warning';
+                                                        break;
+                                                    default:
+                                                        $status_color = 'secondary'; // Atau 'info', 'primary', dll.
+                                                        break;
+                                                }
+                                            ?>
+                                            <h5><span class="badge rounded-pill text-bg-<?php echo $status_color; ?>"><?php echo htmlspecialchars($row['status_pengajuan']); ?></span></h5>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="7" class="text-center">Tidak ada data riwayat pengajuan.</td>
                                 </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="7" class="text-center">Tidak ada data riwayat pengajuan.</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </div>
+        </div>
 </div>
 
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css"/>
-<script type="text/javascript" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css" />
+<script type="text/javascript" src="<?php echo base_url('assets/template/js/jquery-3.7.1.min.js'); ?>"></script>
+<script src="https://cdn.datatables.net/2.3.2/js/dataTables.js"></script>
 
 <script>
+    // Pastikan DOM sudah siap sebelum menginisialisasi DataTable
     $(document).ready(function() {
-        $('#riwayatTable').DataTable({
-            // Konfigurasi DataTables default (client-side processing)
-            // Cukup ini saja jika tidak ada server-side processing
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Indonesian.json"
+        let table = new DataTable('#riwayatTable', {
+            perPage: 10,
+            perPageSelect: [10, 25, 50, 100],
+            searchable: true,
+            sortable: true,
+            labels: {
+                placeholder: "Cari...",
+                perPage: "{select} baris per halaman",
+                noRows: "Tidak ada data yang ditemukan",
+                info: "Menampilkan {start} sampai {end} dari {rows} baris"
             }
         });
     });
