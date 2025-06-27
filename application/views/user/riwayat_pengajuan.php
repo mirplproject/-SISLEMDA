@@ -20,11 +20,11 @@
                             <tr>
                                 <th>No</th>
                                 <th>Username Pengaju</th>
-                                <th>Klasifikasi Surat</th>
                                 <th>No Surat</th>
                                 <th>Perihal</th>
                                 <th>Tanggal Pengajuan</th>
                                 <th>Status Pengajuan</th>
+                                <th>-</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -34,7 +34,6 @@
                                     <tr>
                                         <td><?php echo $no++; ?></td>
                                         <td><?php echo htmlspecialchars($row['username']); ?></td>
-                                        <td><?php echo htmlspecialchars($row['nama_surat']); ?></td>
                                         <td><?php echo htmlspecialchars($row['no_surat']); ?></td>
                                         <td><?php echo htmlspecialchars($row['perihal']); ?></td>
                                         <td><?php echo date('d-m-Y', strtotime($row['tanggal_pengajuan'])); ?></td>
@@ -48,16 +47,19 @@
                                                     case 'ditolak':
                                                         $status_color = 'danger';
                                                         break;
-                                                    case 'kadaluarsa':
+                                                    case 'tidak tersedia':
                                                         $status_color = 'warning';
                                                         break;
+                                                    case 'diproses':
+                                                        $status_color = 'secondary';
+                                                        break;
                                                     default:
-                                                        $status_color = 'secondary'; // Atau 'info', 'primary', dll.
                                                         break;
                                                 }
                                             ?>
                                             <h5><span class="badge rounded-pill text-bg-<?php echo $status_color; ?>"><?php echo htmlspecialchars($row['status_pengajuan']); ?></span></h5>
                                         </td>
+                                        <td><a href="<?php echo site_url('user/detail_pengajuan/' . $row['id_pengajuan']) ?>" class="btn btn-info btn-sm">DETAIL</a></td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>

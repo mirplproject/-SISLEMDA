@@ -63,11 +63,11 @@
 
         <ul class="navbar-nav ms-auto me-3 my-2 my-md-0 d-flex align-items-center gap-3">
             <li class="nav-item dropdown no-arrow mx-1">        
-                <a class="nav-link dropdown-toggle <?php echo ($is_new_notification) ? 'text-danger' : ''; ?>" href="#" id="alertsDropdown" role="button"
+                <a class="nav-link dropdown-toggle <?php echo ($is_new_notification) ? 'text-warning' : ''; ?>" href="#" id="alertsDropdown" role="button"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fas fa-bell fa-fw"></i>    
                     <?php if ($is_new_notification): // Tampilkan badge hanya jika ada notifikasi baru ?>
-                        <span class="badge bg-danger badge-counter">Baru!</span> 
+                        <span class="badge bg-warning badge-counter">Baru!</span> 
                         <?php endif; ?>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end shadow animated--grow-in"

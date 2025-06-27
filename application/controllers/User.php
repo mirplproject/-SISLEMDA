@@ -152,6 +152,41 @@ class User extends CI_Controller {
         $this->load->view('template/sidebar', $data);
         $this->load->view('template/footer', $data);
     }
+      /**
+     * Menampilkan halaman detail pengajuan spesifik.
+     * Hanya user pemilik pengajuan yang bisa melihat detailnya.
+     * @param int $id_pengajuan ID pengajuan yang akan ditampilkan detailnya.
+     */
+    public function detail_pengajuan($id_pengajuan = null) {
+        // Pastikan ID pengajuan diberikan
+        if ($id_pengajuan === null) {
+            $this->session->set_flashdata('error', 'ID Pengajuan tidak ditemukan.');
+            redirect('user/riwayat_pengajuan');
+        }
+
+        $data = [];
+        $data['title'] = 'Detail Pengajuan';
+        $data['user_name'] = $this->session->userdata('name');
+
+        // Ambil data detail pengajuan dari model
+        $pengajuan_detail = $this->User_model->get_detail_pengajuan($id_pengajuan);
+
+        // Cek apakah data ditemukan dan apakah pengajuan ini milik user yang sedang login
+        $current_user_id = $this->session->userdata('id_user');
+        if (!$pengajuan_detail || $pengajuan_detail->id_user != $current_user_id) {
+            $this->session->set_flashdata('error', 'Data pengajuan tidak ditemukan atau Anda tidak memiliki akses.');
+            redirect('user/riwayat_pengajuan');
+        }
+
+        $data['row'] = $pengajuan_detail; // Variabel $row akan dilewatkan ke view detail_pengajuan.php
+
+        $this->_load_notification_data($data); // Muat data notifikasi untuk header
+
+        $data['content_view'] = 'user/detail_pengajuan';
+        $this->load->view('template/header', $data);
+        $this->load->view('template/sidebar', $data);
+        $this->load->view('template/footer', $data);
+    }
 
     // Helper untuk warna badge status (biarkan tetap di helper 'notification_helper.php')
     // private function _get_status_badge_color($status) { ... } // Hapus ini karena sudah di helper
@@ -185,4 +220,5 @@ class User extends CI_Controller {
         $this->load->view('template/sidebar', $data);
         $this->load->view('template/footer', $data);
     }
+    
 }

@@ -25,6 +25,10 @@ class User_model extends CI_Model {
         if ($user_id !== null) {
             $this->db->where('pengajuan.id_user', $user_id);
         }
+        // --- TAMBAHKAN BARIS INI UNTUK FILTER STATUS ---
+        // Mengecualikan status 'direvisi' dari daftar riwayat
+        $this->db->where('pengajuan.status_pengajuan !=', 'direvisi');
+        $this->db->where('pengajuan.status_pengajuan !=', 'diproses');
 
         $this->db->order_by('pengajuan.tanggal_pengajuan', 'DESC');
         return $this->db->get()->result_array();
@@ -41,4 +45,38 @@ class User_model extends CI_Model {
 
         return $this->db->get()->result_array();
     }
+    /**
+     * Menampilkan halaman detail pengajuan spesifik.
+     * Hanya user pemilik pengajuan yang bisa melihat detailnya.
+     * @param int $id_pengajuan ID pengajuan yang akan ditampilkan detailnya.
+     */
+    public function get_detail_pengajuan($id_pengajuan = null) {
+        // Pastikan ID pengajuan diberikan
+        if ($id_pengajuan === null) {
+            $this->session->set_flashdata('error', 'ID Pengajuan tidak ditemukan.');
+            redirect('user/riwayat_pengajuan');
+        }
+
+        $data = [];
+        $data['title'] = 'Detail Pengajuan';
+        $data['user_name'] = $this->session->userdata('name');
+
+        // Ambil data detail pengajuan dari model
+        $pengajuan_detail = $this->User_model->get_detail_pengajuan($id_pengajuan);
+
+        // Cek apakah data ditemukan dan apakah pengajuan ini milik user yang sedang login
+        $current_user_id = $this->session->userdata('id_user');
+        if (!$pengajuan_detail || $pengajuan_detail->id_user != $current_user_id) {
+            $this->session->set_flashdata('error', 'Data pengajuan tidak ditemukan atau Anda tidak memiliki akses.');
+            redirect('user/riwayat_pengajuan');
+        }
+
+        $data['row'] = $pengajuan_detail; // Variabel $row akan dilewatkan ke view detail_pengajuan.php
+
+        $data['content_view'] = 'user/detail_pengajuan';
+        $this->load->view('template/header', $data);
+        $this->load->view('template/sidebar', $data);
+        $this->load->view('template/footer', $data);
+    }
+
 }

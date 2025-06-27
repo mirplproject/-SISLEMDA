@@ -10,9 +10,9 @@ if ( ! function_exists('get_status_badge_color'))
                 return 'success';
             case 'ditolak':
                 return 'danger';
-            case 'kadaluarsa':
+            case 'tidak tersedia':
                 return 'warning';
-            case 'direvisi':
+            case 'tersedia':
                 return 'info';
             case 'pending':
             case 'baru': // Jika Anda punya status 'baru'
