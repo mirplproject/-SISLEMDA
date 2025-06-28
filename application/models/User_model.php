@@ -7,6 +7,10 @@ class User_model extends CI_Model {
         $this->load->database();
     }
 
+    /**
+     * Mengambil semua data user beserta nama role mereka.
+     * @return array Array of objects containing user and role data.
+     */
     public function get_all_user() {
         $this->db->select('user.*, roles.name as role_name');
         $this->db->from('user');
@@ -16,67 +20,84 @@ class User_model extends CI_Model {
         return $this->db->get()->result();
     }
 
+    /**
+     * Mengambil riwayat pengajuan untuk user tertentu, mengecualikan status 'direvisi' dan 'diproses'.
+     * Data diurutkan dari tanggal pengajuan terlama ke terbaru (ASC).
+     * @param int|null $user_id ID user. Jika null, tidak ada filter user spesifik.
+     * @return array Array of associative arrays containing pengajuan history data.
+     */
     public function get_riwayat_pengajuan($user_id = null) {
         $this->db->select('pengajuan.id_pengajuan, user.username, klasifikasi_surat.nama_surat, pengajuan.no_surat, pengajuan.perihal, pengajuan.tanggal_pengajuan, pengajuan.status_pengajuan');
-        $this->db->from('pengajuan'); // Hapus alias 'pengajuan pengajuan' di sini jika tidak diperlukan lagi
+        $this->db->from('pengajuan');
         $this->db->join('user', 'user.id_user = pengajuan.id_user');
         $this->db->join('klasifikasi_surat', 'klasifikasi_surat.id_klasifikasi_surat = pengajuan.id_klasifikasi_surat');
 
         if ($user_id !== null) {
             $this->db->where('pengajuan.id_user', $user_id);
         }
-        // --- TAMBAHKAN BARIS INI UNTUK FILTER STATUS ---
-        // Mengecualikan status 'direvisi' dari daftar riwayat
+        // Mengecualikan status 'direvisi' dan 'diproses' dari daftar riwayat
         $this->db->where('pengajuan.status_pengajuan !=', 'direvisi');
         $this->db->where('pengajuan.status_pengajuan !=', 'diproses');
 
-        $this->db->order_by('pengajuan.tanggal_pengajuan', 'DESC');
+        $this->db->order_by('pengajuan.tanggal_pengajuan', 'DESC'); // Mengembalikan ke DESC sesuai riwayat terakhir
         return $this->db->get()->result_array();
     }
 
-    // --- FUNGSI BARU/MODIFIKASI UNTUK NOTIFIKASI ---
-    // Mengambil N data pengajuan terbaru untuk user tertentu
+    /**
+     * Mengambil N data pengajuan terbaru untuk user tertentu, diurutkan DESC (terbaru duluan).
+     * Digunakan untuk notifikasi di header.
+     * @param int $user_id ID user.
+     * @param int $limit Jumlah data yang ingin diambil.
+     * @return array Array of associative arrays containing latest pengajuan data.
+     */
     public function get_latest_pengajuan($user_id, $limit = 3) {
         $this->db->select('id_pengajuan, perihal, tanggal_pengajuan, status_pengajuan');
         $this->db->from('pengajuan');
         $this->db->where('id_user', $user_id); // Filter berdasarkan user yang login
-        $this->db->order_by('id_pengajuan', 'DESC'); // Urutkan berdasarkan ID terbaru (paling baru)
+        $this->db->order_by('tanggal_pengajuan', 'DESC'); // Urutkan berdasarkan tanggal pengajuan terbaru
         $this->db->limit($limit);
 
         return $this->db->get()->result_array();
     }
+
     /**
-     * Menampilkan halaman detail pengajuan spesifik.
-     * Hanya user pemilik pengajuan yang bisa melihat detailnya.
-     * @param int $id_pengajuan ID pengajuan yang akan ditampilkan detailnya.
+     * Mengambil detail lengkap satu pengajuan berdasarkan ID-nya,
+     * termasuk data lampiran dan riwayat disposisi.
+     *
+     * @param int $id_pengajuan ID pengajuan yang akan diambil detailnya.
+     * @return object|null Objek detail pengajuan jika ditemukan, atau null.
      */
-    public function get_detail_pengajuan($id_pengajuan = null) {
-        // Pastikan ID pengajuan diberikan
-        if ($id_pengajuan === null) {
-            $this->session->set_flashdata('error', 'ID Pengajuan tidak ditemukan.');
-            redirect('user/riwayat_pengajuan');
+    public function get_detail_pengajuan($id_pengajuan) {
+        // Query untuk detail pengajuan utama
+        // Menggunakan 'u.nama' dari tabel user untuk nama_user (Pengaju)
+        $this->db->select('p.*, u.nama as nama_user, ks.nama_surat');
+        $this->db->from('pengajuan p');
+        $this->db->join('user u', 'u.id_user = p.id_user');
+        $this->db->join('klasifikasi_surat ks', 'ks.id_klasifikasi_surat = p.id_klasifikasi_surat');
+        $this->db->where('p.id_pengajuan', $id_pengajuan);
+        $query = $this->db->get();
+        $pengajuan_detail = $query->row();
+
+        if ($pengajuan_detail) {
+            // Query untuk lampiran
+            // Menggunakan kolom 'file' dari tabel 'lampiran'
+            $this->db->select('id_lampiran, file');
+            $this->db->from('lampiran');
+            $this->db->where('id_pengajuan', $id_pengajuan);
+            $pengajuan_detail->lampiran = $this->db->get()->result();
+
+            // Query untuk disposisi
+            // Mengambil nama dan NIK dari user yang MENDISPOSISI (dari_user)
+            $this->db->select('d.*, u_from.nama as nama_tujuan, u_from.nik');
+            $this->db->from('disposisi d');
+            // Join ke tabel user untuk 'dari_user' (siapa yang mendisposisi)
+            $this->db->join('user u_from', 'u_from.id_user = d.dari_user', 'left');
+
+            $this->db->where('d.id_pengajuan', $id_pengajuan);
+            $this->db->order_by('d.tanggal_disposisi', 'ASC');
+            $pengajuan_detail->disposisi = $this->db->get()->result();
         }
 
-        $data = [];
-        $data['title'] = 'Detail Pengajuan';
-        $data['user_name'] = $this->session->userdata('name');
-
-        // Ambil data detail pengajuan dari model
-        $pengajuan_detail = $this->User_model->get_detail_pengajuan($id_pengajuan);
-
-        // Cek apakah data ditemukan dan apakah pengajuan ini milik user yang sedang login
-        $current_user_id = $this->session->userdata('id_user');
-        if (!$pengajuan_detail || $pengajuan_detail->id_user != $current_user_id) {
-            $this->session->set_flashdata('error', 'Data pengajuan tidak ditemukan atau Anda tidak memiliki akses.');
-            redirect('user/riwayat_pengajuan');
-        }
-
-        $data['row'] = $pengajuan_detail; // Variabel $row akan dilewatkan ke view detail_pengajuan.php
-
-        $data['content_view'] = 'user/detail_pengajuan';
-        $this->load->view('template/header', $data);
-        $this->load->view('template/sidebar', $data);
-        $this->load->view('template/footer', $data);
+        return $pengajuan_detail;
     }
-
 }

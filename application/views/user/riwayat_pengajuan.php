@@ -48,9 +48,6 @@
                                                         $status_color = 'danger';
                                                         break;
                                                     case 'tidak tersedia':
-                                                        $status_color = 'warning';
-                                                        break;
-                                                    case 'diproses':
                                                         $status_color = 'secondary';
                                                         break;
                                                     default:
