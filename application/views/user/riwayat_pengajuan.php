@@ -56,7 +56,7 @@
                                             ?>
                                             <h5><span class="badge rounded-pill text-bg-<?php echo $status_color; ?>"><?php echo htmlspecialchars($row['status_pengajuan']); ?></span></h5>
                                         </td>
-                                        <td><a href="<?php echo site_url('user/detail_pengajuan/' . $row['id_pengajuan']) ?>" class="btn btn-info btn-sm">DETAIL</a></td>
+                                        <td><a href="<?php echo site_url('user/detail_pengajuan/' . $row['id_pengajuan']) ?>" class="btn btn-primary btn-sm">DETAIL</a></td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
