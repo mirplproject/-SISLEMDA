@@ -85,7 +85,7 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <div class="small text-gray-500"><?php echo date('F d, Y H:i', strtotime($notification['tanggal_pengajuan'])); ?></div>
+                                    <div class="small text-gray-500"><?php echo date('F d, Y', strtotime($notification['tanggal_pengajuan'])); ?></div>
                                     <span class="font-weight-bold">Pengajuan "<?php echo htmlspecialchars($notification['perihal']); ?>" - Status: <?php echo htmlspecialchars(ucfirst($notification['status_pengajuan'])); ?></span>
                                 </div>
                             </a>
