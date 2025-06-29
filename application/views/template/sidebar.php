@@ -29,7 +29,7 @@
                     $user_category = 'user3';
                 }
 
-                if ($role == 'admin') {
+                if ($role == 'Admin') {
                     echo '<a class="nav-link ' . ($this->uri->segment(1) == 'admin' && $this->uri->segment(2) == '' ? 'active' : '') . '" href="' . site_url('admin') . '">
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Dashboard
@@ -74,6 +74,10 @@
                     echo '<a class="nav-link ' . ($this->uri->segment(2) == 'riwayat_pengajuan' ? 'active' : '') . '" href="' . site_url('user/riwayat_pengajuan') . '">
                             <div class="sb-nav-link-icon"><i class="fas fa-history"></i></div>
                             Riwayat Pengajuan
+                          </a>';
+                    echo '<a class="nav-link ' . ($this->uri->segment(2) == 'laporan' ? 'active' : '') . '" href="' . site_url('user/laporan') . '">
+                            <div class="sb-nav-link-icon"><i class="fas fa-chart-bar"></i></div>
+                            Laporan
                           </a>';
 
                     if ($user_category == 'user2') {

@@ -7,7 +7,7 @@ class Admin extends CI_Controller {
         $this->load->library('session');
         $this->load->helper('url');
         $this->load->model('admin_m');
-        if (!$this->session->userdata('logged_in') || $this->session->userdata('active_role') != 'admin') {
+        if (!$this->session->userdata('logged_in') || $this->session->userdata('active_role') != 'Admin') {
             redirect('auth/login');
         }
     }
@@ -236,11 +236,11 @@ class Admin extends CI_Controller {
 
             log_message('debug', 'Role: ' . $role_name . ', Prodi ID: ' . $prodi_id . ', Fakultas ID: ' . $fakultas_id);
 
-            if ($role_name == 'dosen' && $fakultas_id) {
+            if ($role_name == 'Dosen' && $fakultas_id) {
                 $this->admin_m->assign_dosen($user_id, $fakultas_id);
-            } elseif ($role_name == 'kaprodi' && $prodi_id) {
+            } elseif ($role_name == 'Kaprodi' && $prodi_id) {
                 $this->admin_m->assign_kaprodi($user_id, $prodi_id);
-            } elseif ($role_name == 'dekan' && $fakultas_id) {
+            } elseif ($role_name == 'Dekan' && $fakultas_id) {
                 $this->admin_m->assign_dekan($user_id, $fakultas_id);
             }
 
@@ -297,11 +297,11 @@ class Admin extends CI_Controller {
 
             log_message('debug', 'Role (Edit): ' . $role_name . ', Prodi ID: ' . $prodi_id . ', Fakultas ID: ' . $fakultas_id);
 
-            if ($role_name == 'dosen' && $fakultas_id) {
+            if ($role_name == 'Dosen' && $fakultas_id) {
                 $this->admin_m->assign_dosen($user_id, $fakultas_id);
-            } elseif ($role_name == 'kaprodi' && $prodi_id) {
+            } elseif ($role_name == 'Kaprodi' && $prodi_id) {
                 $this->admin_m->assign_kaprodi($user_id, $prodi_id);
-            } elseif ($role_name == 'dekan' && $fakultas_id) {
+            } elseif ($role_name == 'Dekan' && $fakultas_id) {
                 $this->admin_m->assign_dekan($user_id, $fakultas_id);
             }
 

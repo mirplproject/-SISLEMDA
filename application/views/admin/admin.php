@@ -5,13 +5,13 @@
     <div class="row g-4 justify-content-center">
         <?php
         $jabatanList = [
-            'admin' => 'Admin',
-            'dosen' => 'Dosen Biasa',
-            'kaprodi' => 'Kaprodi',
-            'dekan' => 'Dekan',
-            'warek1' => 'Warek1',
-            'warek2' => 'Warek2',
-            'rektor' => 'Rektor'
+            'Admin' => 'Admin',
+            'Dosen' => 'Dosen Biasa',
+            'Kaprodi' => 'Kaprodi',
+            'Dekan' => 'Dekan',
+            'Warek1' => 'Warek1',
+            'Warek2' => 'Warek2',
+            'Rektor' => 'Rektor'
         ];
 
         foreach ($jabatanList as $key => $label): ?>

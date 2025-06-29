@@ -11,6 +11,7 @@
         <h2 class="mb-4">Lembar Pengajuan</h2>
         <form action="<?php echo site_url('surat/insert'); ?>" method="post" enctype="multipart/form-data" id="pengajuanForm">
           <input type="hidden" name="user_id" value="<?php echo $this->session->userdata('id_user'); ?>">
+          <input type="hidden" name="nama_role" value="<?php echo htmlspecialchars($nama_role); ?>">
           <div class="form-row">
               <div class="form-group">
               <label for="no">No</label>

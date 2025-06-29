@@ -12,7 +12,7 @@ class Auth extends CI_Controller {
     public function login() {
         if ($this->session->userdata('logged_in')) {
             $role = $this->session->userdata('active_role');
-            if ($role == 'admin') {
+            if ($role == 'Admin') {
                 redirect('admin');
             } else {
                 redirect('user/dashboard');
@@ -46,7 +46,7 @@ class Auth extends CI_Controller {
                         $this->load->view('auth/choose_role', $data);
                     } else {
                         $this->session->set_userdata('active_role', $roles[0]['nama_role']);
-                        if ($roles[0]['nama_role'] == 'admin') {
+                        if ($roles[0]['nama_role'] == 'Admin') {
                             redirect('admin');
                         } else {
                             redirect('user/dashboard');
@@ -84,7 +84,7 @@ class Auth extends CI_Controller {
 
             if ($role_exists) {
                 $this->session->set_userdata('active_role', $role);
-                if ($role == 'admin') {
+                if ($role == 'Admin') {
                     redirect('admin');
                 } else {
                     redirect('user/dashboard');

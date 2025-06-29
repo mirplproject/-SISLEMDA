@@ -16,16 +16,16 @@ class User extends CI_Controller {
 
         // Definisikan kategori role
         $this->user1_roles = [
-            'dosen', 'pelayanan_akademik', 'komputasi_data', 'penelitian_pkm', 'publikasi_hki',
-            'inkubator_bisnis', 'pendidikan_pelatihan', 'pengembangan_karir', 'pelayanan', 'akuntansi',
-            'pajak', 'kerumahtanggaan', 'sarpras', 'upt_perpustakaan', 'lab', 'ppks', 'data_analyst',
-            'konten_editor', 'monitoring_evaluasi', 'pelaporan_data', 'spme'
+            'Dosen', 'Pelayanan_Akademik', 'Komputasi_Data', 'Penelitian_Pkm', 'Publikasi_Hki',
+            'Inkubator_Bisnis', 'Pendidikan_Pelatihan', 'Pengembangan_Karir', 'Pelayanan', 'Akuntansi',
+            'Pajak', 'Kerumahtanggaan', 'Sarpras', 'Upt_Perpustakaan', 'Lab', 'Ppks', 'Data_Analyst',
+            'Konten_Editor', 'Monitoring_Evaluasi', 'Pelaporan_Data', 'Spme'
         ];
         $this->user2_roles = [
-            'kaprodi', 'dekan', 'bak', 'lppm', 'kerjasama', 'keuangan', 'umum', 'si_infrastruktur_jaringan',
-            'kemahasiswaan', 'marketing_promosi', 'bic', 'ppm', 'warek1', 'warek2', 'warek3', 'rektor'
+            'Kaprodi', 'Dekan', 'Bak', 'Lppm', 'Kerjasama', 'Keuangan', 'Umum', 'Si_Infrastruktur_Jaringan',
+            'Kemahasiswaan', 'Marketing_Promosi', 'Bina Insani Career', 'Pusat Penjamin Mutu', 'Wakil Rektor 1', 'Wakil Rektor 2', 'Wakil Rektor 3', 'Rektor'
         ];
-        $this->user3_roles = ['sdm', 'yayasan'];
+        $this->user3_roles = ['SDM', 'Yayasan'];
 
         // Validasi login dan role admin
         if (!$this->session->userdata('logged_in') || $this->session->userdata('active_role') == 'admin') {
@@ -59,25 +59,51 @@ class User extends CI_Controller {
 
     public function lembar_pengajuan() {
         $data = [];
+        $data['all_roles'] = $this->db->get('role')->result_array();
+        $data['current_role'] = strtolower($this->User_model->get_user_role($this->session->userdata('id_user'))->nama_role);
         $data['title'] = 'Lembar Pengajuan';
         $data['user_name'] = $this->session->userdata('name');
         $data['klasifikasis'] = $this->Surat_model->get_all_klasifikasi();
         $data['unitpengajuan'] = $this->Surat_model->get_all_unitpengajuan();
         $data['no_surat'] = $this->Surat_model->generate_nomor_surat(); // Generate nomor surat
 
+
         // Ambil role user dari session atau query
         $id_user = $this->session->userdata('id_user');
-        $role = $this->User_model->get_role_by_user($id_user); // asumsi fungsi ini mengembalikan objek role
+        $role_obj = $this->User_model->get_user_role($id_user); // Harus return objek role
+        $data['nama_role'] = $role_obj ? $role_obj->id_role : '';
 
-        // Daftar role yang akan menampilkan lembar pengajuan khusus (atas)
-        $role_atas = ['warek1', 'warek2', 'warek3', 'ppm', 'rektor', 'yayasan'];
+        $role = $this->User_model->get_role_by_user($id_user); // Asumsinya fungsi ini mengembalikan objek dengan properti 'nama_role'
 
-        // Tentukan view yang akan digunakan berdasarkan role
-        if ($role && in_array(strtolower($role->nama_role), $role_atas)) {
+        $role_atas = [
+            'wakil rektor 1',
+            'wakil rektor 2',
+            'wakil rektor 3',
+            'pusat penjamin mutu',
+            // 'rektor',
+            'yayasan',
+            'dekan',
+            'kaprodi',
+            'sistem informasi dan infrastruktur jaringan',
+            'perencanaan dan pengembangan sistem',
+            'badan administrasi dan akademik',
+            'bagian penelitian dan pkm',
+            'pengembangan dan sdm',
+            'keuangan',
+            'operasional pembelajaran dan umum',
+            'kemahasiswaan dan konseling',
+            'pemasaran dan kerjasama',
+            'bina insani career',
+            'kewirausahaan',
+            'subag digital marketing'
+        ];
+
+        if ($role && in_array(strtolower(trim($role->nama_role)), $role_atas)) {
             $data['content_view'] = 'user/lembar_pengajuan_atas';
         } else {
             $data['content_view'] = 'user/lembar_pengajuan';
         }
+
         
         $this->load->view('template/header', $data);
         $this->load->view('template/sidebar', $data);
@@ -115,13 +141,25 @@ class User extends CI_Controller {
     }
 
     public function laporan() {
-        $active_role = $this->session->userdata('active_role');
-        if (!in_array($active_role, $this->user2_roles)) {
-            redirect('user/dashboard');
+        // $active_role = $this->session->userdata('active_role');
+        // if (!in_array($active_role, $this->user2_roles)) {
+        //     redirect('user/dashboard');
+        // }
+        $start_date = $this->input->get('start_date');
+        $end_date = $this->input->get('end_date');
+
+        $role_user = $this->session->userdata('role'); // Ganti sesuai session kamu
+        $id_user = $this->session->userdata('id_user'); // Jika perlu filter spesifik ke user
+
+        if ($start_date && $end_date) {
+            $riwayat = $this->M_pengajuan->getDisposisiMasuk($role_user, $start_date, $end_date);
+        } else {
+            $riwayat = [];
         }
 
         $data = [];
         $data['title'] = 'Laporan';
+        $data['riwayat'] = $riwayat;
         $data['user_name'] = $this->session->userdata('name');
         $data['content_view'] = 'user/laporan';
         $this->load->view('template/header', $data);
