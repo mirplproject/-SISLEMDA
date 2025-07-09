@@ -37,7 +37,7 @@ class User extends CI_Controller {
         $active_role = $this->session->userdata('active_role');
         $is_valid = false;
         foreach ($allowed_roles as $role) {
-            if ($role['nama_role'] == $active_role) {
+            if (isset($role['nama_role']) && $role['nama_role'] == $active_role) {
                 $is_valid = true;
                 break;
             }
@@ -47,7 +47,7 @@ class User extends CI_Controller {
         }
     }
 
-    // Helper untuk memuat data notifikasi ke $data array
+    // Helper untuk memuat data notifikasi ke $data array (tidak berubah)
     private function _load_notification_data(&$data) {
         $user_id = $this->session->userdata('id_user');
         $data['notifications'] = [];
@@ -57,56 +57,76 @@ class User extends CI_Controller {
             $latest_pengajuan = $this->User_model->get_latest_pengajuan($user_id, 3);
             $data['notifications'] = $latest_pengajuan;
 
-            // Dapatkan ID pengajuan terakhir yang dilihat dari sesi
             $last_seen_id = $this->session->userdata('last_seen_pengajuan_id');
 
-            // Cek apakah ada notifikasi baru
             if (!empty($latest_pengajuan)) {
-                $most_recent_id = $latest_pengajuan[0]['id_pengajuan']; // ID pengajuan paling baru dari 3 data
+                $most_recent_id = $latest_pengajuan[0]['id_pengajuan'];
                 if ($last_seen_id === null || $most_recent_id > $last_seen_id) {
                     $data['is_new_notification'] = true;
                 }
             }
-            // Untuk badge count, kita bisa tampilkan 3+ jika lebih dari 3 data
-            // Atau jika ingin badge menunjukkan 'new' atau 'baru', bisa disesuaikan
-            // Untuk permintaan ini, kita hanya butuh flag is_new_notification untuk warna ikon bel.
             $data['notification_count_display'] = !empty($latest_pengajuan) ? count($latest_pengajuan) : 0;
         }
     }
 
-    // --- FUNGSI BARU: Untuk menandai notifikasi sudah dilihat ---
+    // Fungsi untuk menandai notifikasi sudah dilihat (tidak berubah)
     public function mark_notifications_as_read() {
-        // Pastikan ini adalah request AJAX
         if ($this->input->is_ajax_request()) {
             $user_id = $this->session->userdata('id_user');
             if ($user_id) {
-                // Dapatkan ID pengajuan terbaru dari database
-                $latest_pengajuan = $this->User_model->get_latest_pengajuan($user_id, 1); // Ambil 1 yang paling baru saja
-
+                $latest_pengajuan = $this->User_model->get_latest_pengajuan($user_id, 1);
                 if (!empty($latest_pengajuan)) {
                     $most_recent_id = $latest_pengajuan[0]['id_pengajuan'];
-                    // Simpan ID pengajuan terbaru ke sesi user
                     $this->session->set_userdata('last_seen_pengajuan_id', $most_recent_id);
                 }
             }
-            echo json_encode(['status' => 'success']); // Beri respons ke AJAX
+            echo json_encode(['status' => 'success']);
         } else {
-            show_404(); // Jika bukan request AJAX, tampilkan 404
+            show_404();
         }
     }
 
-    // --- Fungsi-fungsi lain tetap sama, hanya memanggil _load_notification_data ---
+    // --- MODIFIKASI FUNGSI DASHBOARD (ditambahkan data baru) ---
     public function dashboard() {
         $data = [];
         $data['title'] = 'Dashboard User';
         $data['user_name'] = $this->session->userdata('name');
+        $user_id = $this->session->userdata('id_user'); // Ambil ID user yang sedang login
+        $active_role = $this->session->userdata('active_role'); // Ambil active_role
+
+        // 1. Data untuk Card "Total Pengajuan"
+        $data['total_pengajuan'] = $this->User_model->count_total_pengajuan($user_id);
+
+        // 2. Data untuk Card "Total Disposisi Masuk"
+        // Asumsi 'disposisi masuk' berarti disposisi terkait pengajuan user yang login
+        $data['total_disposisi_masuk'] = $this->User_model->count_total_disposisi_masuk($user_id);
+
+        // 3. Data untuk Card "Total Laporan Pengajuan" (Conditional)
+        $data['show_laporan_card'] = false;
+        if (in_array($active_role, $this->user2_roles)) {
+            $data['show_laporan_card'] = true;
+            $data['total_laporan_pengajuan'] = $this->User_model->count_total_laporan_pengajuan($user_id);
+        }
+
+        // 4. Data untuk Card "Total Arsip" (Conditional)
+        $data['show_arsip_card'] = false;
+        if (in_array($active_role, $this->user3_roles)) {
+            $data['show_arsip_card'] = true;
+            $data['total_arsip'] = $this->User_model->count_total_arsip(); // Ini menghitung total arsip SEMUA user
+        }
+
+        // 5. Data untuk Tabel "Status Pengajuan Terbaru" (5 data)
+        $data['latest_pengajuan_dashboard'] = $this->User_model->get_dashboard_latest_pengajuan($user_id);
+
+        $this->_load_notification_data($data); // Muat data notifikasi untuk header
+
         $data['content_view'] = 'user/dashboard';
-        $this->_load_notification_data($data);
         $this->load->view('template/header', $data);
         $this->load->view('template/sidebar', $data);
         $this->load->view('template/footer', $data);
     }
 
+    // Fungsi-fungsi lain di controller ini tidak perlu diubah
     public function lembar_pengajuan() {
         $data = [];
         $data['title'] = 'Lembar Pengajuan';
@@ -152,13 +172,8 @@ class User extends CI_Controller {
         $this->load->view('template/sidebar', $data);
         $this->load->view('template/footer', $data);
     }
-      /**
-     * Menampilkan halaman detail pengajuan spesifik.
-     * Hanya user pemilik pengajuan yang bisa melihat detailnya.
-     * @param int $id_pengajuan ID pengajuan yang akan ditampilkan detailnya.
-     */
+
     public function detail_pengajuan($id_pengajuan = null) {
-        // Pastikan ID pengajuan diberikan
         if ($id_pengajuan === null) {
             $this->session->set_flashdata('error', 'ID Pengajuan tidak ditemukan.');
             redirect('user/riwayat_pengajuan');
@@ -168,28 +183,23 @@ class User extends CI_Controller {
         $data['title'] = 'Detail Pengajuan';
         $data['user_name'] = $this->session->userdata('name');
 
-        // Ambil data detail pengajuan dari model
         $pengajuan_detail = $this->User_model->get_detail_pengajuan($id_pengajuan);
 
-        // Cek apakah data ditemukan dan apakah pengajuan ini milik user yang sedang login
         $current_user_id = $this->session->userdata('id_user');
         if (!$pengajuan_detail || $pengajuan_detail->id_user != $current_user_id) {
             $this->session->set_flashdata('error', 'Data pengajuan tidak ditemukan atau Anda tidak memiliki akses.');
             redirect('user/riwayat_pengajuan');
         }
 
-        $data['row'] = $pengajuan_detail; // Variabel $row akan dilewatkan ke view detail_pengajuan.php
+        $data['row'] = $pengajuan_detail;
 
-        $this->_load_notification_data($data); // Muat data notifikasi untuk header
+        $this->_load_notification_data($data);
 
         $data['content_view'] = 'user/detail_pengajuan';
         $this->load->view('template/header', $data);
         $this->load->view('template/sidebar', $data);
         $this->load->view('template/footer', $data);
     }
-
-    // Helper untuk warna badge status (biarkan tetap di helper 'notification_helper.php')
-    // private function _get_status_badge_color($status) { ... } // Hapus ini karena sudah di helper
 
     public function laporan() {
         $active_role = $this->session->userdata('active_role');
@@ -220,5 +230,4 @@ class User extends CI_Controller {
         $this->load->view('template/sidebar', $data);
         $this->load->view('template/footer', $data);
     }
-    
 }
